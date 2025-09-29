@@ -34,15 +34,12 @@ This project is all about creating a **game-packed website** where you can play 
 ## 🚀 How to Play
 
 👉 Visit the live site here:
-**[https://yourusername.github.io/gamehub](https://yourusername.github.io/gamehub)**
+**(still in progress)
 
 Or run locally:
 
 ```bash
-git clone https://github.com/yourusername/gamehub.git
-cd gamehub
-npm install
-npm start
+still in development
 ```
 
 Then open your browser at 👉 **[http://localhost:3000](http://localhost:3000)**
@@ -76,4 +73,5 @@ This project is licensed under the **MIT License** 📄
 
 ### 💡 Stay tuned — big things coming soon!
 
-Play hard, have fun! 🎮🔥
+Play hard, have fun and Rebell against the all seeing daemen blocksi🎮🔥
+- sincerly, palmtree890
