@@ -6,8 +6,8 @@ Big thanks to the amazing contributors who made **Pangonn** possible! 🎮✨
 
 ## 👥 Team
 
-* 🌴 **Palmtree890** — Developer (50%)
-* 🤖 **Mewinator** — Developer (50%)
+* 🌴 [**Palmtree890**](https://github.com/Palmtree890) — Developer (50%)
+* 🤖 [**Mewinator**](https://github.com/Mewinator) — Developer (50%)
 
 Both share **equal responsibility** for coding, building, and maintaining the project. 💻⚡
 
