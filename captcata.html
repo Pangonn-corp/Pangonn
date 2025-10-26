@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CAPTCATA</title>
+<style>
+  :root{
+    --bg:#0f1724; --card:#0b1220; --text:#e6eef8; --muted:#9fb0c9;
+    --accent:#4fbeff;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  body{margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#041024 0%, #071730 100%); color:var(--text);}
+  .wrap{width:min(880px,96%); padding:28px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:14px; box-shadow:0 6px 30px rgba(2,6,23,0.6);}
+  header{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+  header h1{font-size:20px; margin:0}
+  header p{margin:0; color:var(--muted); font-size:13px}
+  .card{background:var(--card); padding:18px; border-radius:12px; margin-bottom:14px;}
+  .question{font-size:16px; margin-bottom:10px;}
+  .answers{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .option{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); padding:10px; border-radius:8px; cursor:pointer; user-select:none;}
+  .option input{display:none}
+  .option.selected{outline:2px solid var(--accent); box-shadow:0 4px 14px rgba(79,190,255,0.08);}
+  .meta{display:flex; justify-content:space-between; align-items:center; margin-top:12px; color:var(--muted); font-size:13px;}
+  button{background:var(--accent); color:#022; padding:10px 14px; border-radius:9px; border:0; cursor:pointer; font-weight:600;}
+  .result{padding:12px; border-radius:10px; background:linear-gradient(90deg, rgba(79,190,255,0.06), rgba(127,156,255,0.02)); color:var(--text);}
+  .small{font-size:13px; color:var(--muted)}
+  footer{margin-top:12px; font-size:12px; color:var(--muted)}
+  @media (max-width:560px){ .answers{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap" role="main" aria-labelledby="title">
+  <header>
+    <div>
+      <h1 id="title">CAPTCATA</h1>
+      <p>Completly Automated Public Turningtest to tell Children And Teachers Apart</p>
+    </div>
+  </header>
+
+  <div id="quiz-area" class="card" aria-live="polite">
+    <div id="qbox">
+      <!-- question card inserted here -->
+    </div>
+
+    <div class="meta">
+      <div class="small" id="progress">Question <span id="cur">0</span>/<span id="total">0</span></div>
+      <div>
+        <button id="nextBtn" disabled>Next</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="result-area" style="display:none" class="card result" aria-live="polite"></div>
+  <footer>
+    <p><strong>Note:</strong> This test is imperfect and is just a starter for the real finished CAPTCATA</p>
+  </footer>
+</div>
+
+<script>
+const adultPool = [
+  {
+    q: "In common finance terms, what does 'APR' stand for?",
+    choices: [
+      "Annual percentage rate",
+      "Average payment return",
+      "Annual payment ratio",
+      "Adjusted payout rate"
+    ],
+    a: 0
+  },
+  {
+    q: "Which document is the legal instrument that typically transfers property ownership?",
+    choices: [
+      "A property deed",
+      "A rental agreement",
+      "An insurance binder",
+      "A mortgage statement"
+    ],
+    a: 0
+  },
+  {
+    q: "Which of these describes what you must do when filing income taxes?",
+    choices: [
+      "Report total taxable income",
+      "Apply for a new passport",
+      "Register for local voting",
+      "Buy homeowner insurance"
+    ],
+    a: 0
+  },
+  {
+    q: "If someone asks you to 'reconcile accounts', what are they usually checking?",
+    choices: [
+      "Matching transactions and balances",
+      "Changing a mailing address",
+      "Updating a username and password",
+      "Booking travel reservations"
+    ],
+    a: 0
+  },
+  {
+    q: "What does 'interest rate' most directly affect?",
+    choices: [
+      "The cost of borrowing money",
+      "The speed of an internet connection",
+      "The duration of a software license",
+      "The size of a monitor screen"
+    ],
+    a: 0
+  }
+];
+
+const kidPool = [
+  {
+    q: "Is Italian Brainrot considered old now?",
+    choices: ["Yeah, it's ancient now", "No, it's brand new", "It's from last week", "It's still the main trend"],
+    a: 0
+  },
+  {
+    q: "Where did the '67' meme come from?",
+    choices: ["A Roblox audio joke", "A Fortnite emote code", "A random TikTok filter", "A Minecraft mod version"],
+    a: 0
+  },
+  {
+    q: "What do people mean when they say 'Skibidi'? ",
+    choices: ["A toilet meme trend", "A slang for money", "A K-pop group", "A dance style from 2010"],
+    a: 0
+  },
+  {
+    q: "What’s the usual answer when someone says 'Rizz check'?",
+    choices: ["Pull up the charm", "Say no more", "Drop the clip", "Slide the meme"],
+    a: 0
+  },
+  {
+    q: "When someone says 'Ohio core', what are they referring to?",
+    choices: ["Weird cursed memes", "A new sports league", "A 2000s TV show", "A clothing brand"],
+    a: 0
+  },
+  {
+    q: "What does 'Fanum Tax' mean online?",
+    choices: ["Stealing food from friends", "Paying a game fee", "Streaming lag issues", "Losing coins in Roblox"],
+    a: 0
+  },
+  {
+    q: "When someone types 'gyatt', what are they reacting to?",
+    choices: ["A big surprise or shape", "An anime plot twist", "A gaming loss", "A music beat drop"],
+    a: 0
+  },
+  {
+    q: "What’s the 'Goofy Ahh' phrase usually used for?",
+    choices: ["Calling something silly", "Describing a cool trick", "Talking about money", "Naming a pet"],
+    a: 0
+  },
+  {	
+    q: "What’s the meaning of 'Skibidi Toilet rizz arc'?",
+    choices: ["A funny crossover meme", "A TV show season", "A book reference", "A sports match joke"],
+    a: 0
+  },
+  {
+    q: "When someone says 'bro is NPCing', what do they mean?",
+    choices: ["Acting robotic or clueless", "Playing too much RPG", "Typing too fast", "Streaming a story game"],
+    a: 0
+  }
+];
+
+// Utility: shuffle array in place
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+// Build the quiz: pick a mix of adult & kid questions
+const TOTAL_QUESTIONS = 15; // short captcha-style quiz
+function buildQuiz(){
+  const selected = [];
+  // ensure at least 2 adult and 2 kid questions when possible
+  const adultCount = Math.min(2, adultPool.length);
+  const kidCount = Math.min(2, kidPool.length);
+  // pick random adult questions
+  const adults = shuffle([...adultPool]).slice(0, adultCount);
+  const kids = shuffle([...kidPool]).slice(0, kidCount);
+  selected.push(...adults, ...kids);
+
+  // fill remaining slots with random mixed questions
+  const remaining = TOTAL_QUESTIONS - selected.length;
+  const combined = shuffle([...adultPool, ...kidPool]);
+  for(let i=0; selected.length < TOTAL_QUESTIONS && i<combined.length; i++){
+    if(!selected.includes(combined[i])) selected.push(combined[i]);
+  }
+
+  // shuffle final set
+  return shuffle(selected).map(item => {
+    // copy to avoid mutating pools; attach metadata whether adult or kid
+    const isAdult = adultPool.includes(item);
+    return {
+      q: item.q,
+      choices: [...item.choices],
+      a: item.a,
+      isAdult
+    };
+  });
+}
+
+let quiz = buildQuiz();
+let curIndex = 0;
+let answers = new Array(quiz.length).fill(null);
+let adultCorrect = 0;
+let kidCorrect = 0;
+
+const qbox = document.getElementById('qbox');
+const nextBtn = document.getElementById('nextBtn');
+const curElem = document.getElementById('cur');
+const totalElem = document.getElementById('total');
+const resultArea = document.getElementById('result-area');
+
+totalElem.textContent = quiz.length;
+curElem.textContent = 0;
+
+function renderQuestion(index){
+  curElem.textContent = index+1;
+  const item = quiz[index];
+  // shuffle choices but keep track of which is correct
+  const indices = item.choices.map((c,i)=>i);
+  shuffle(indices);
+  const shuffledChoices = indices.map(i=>item.choices[i]);
+  const correctIndex = indices.indexOf(item.a); // new index of correct answer
+
+  // store mapping on this item (non-destructive to pool)
+  item._shuffled = shuffledChoices;
+  item._correctIndex = correctIndex;
+
+  qbox.innerHTML = `
+    <div class="question"><strong>Q${index+1}.</strong> ${item.q}</div>
+    <div class="answers" role="list">
+      ${shuffledChoices.map((c,i)=>`
+        <label class="option" tabindex="0" data-choice="${i}" role="listitem" aria-pressed="false">
+          <input type="radio" name="choice" value="${i}" />
+          <div class="opt-text">${escapeHtml(c)}</div>
+        </label>
+      `).join('')}
+    </div>
+  `;
+
+  // attach click handlers
+  document.querySelectorAll('.option').forEach(opt=>{
+    opt.addEventListener('click', ()=> {
+      document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+      nextBtn.disabled = false;
+    });
+    // keyboard accessibility
+    opt.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); opt.click(); }
+    });
+  });
+
+  nextBtn.disabled = true;
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+nextBtn.addEventListener('click', ()=>{
+  // read selected choice
+  const sel = document.querySelector('.option.selected');
+  if(!sel) return;
+  const chosen = Number(sel.getAttribute('data-choice'));
+  answers[curIndex] = chosen;
+
+  // update correct counters now or later
+  const item = quiz[curIndex];
+  const wasCorrect = (chosen === item._correctIndex);
+  if(wasCorrect){
+    if(item.isAdult) adultCorrect++;
+    else kidCorrect++;
+  }
+
+  // proceed
+  curIndex++;
+  if(curIndex < quiz.length){
+    renderQuestion(curIndex);
+  } else {
+    showResult();
+  }
+});
+
+// Allow Enter to proceed on Next button
+nextBtn.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ nextBtn.click(); } });
+
+// start
+renderQuestion(curIndex);
+
+// Result logic
+function showResult(){
+  document.getElementById('quiz-area').style.display = 'none';
+  resultArea.style.display = 'block';
+
+  // Compute per-category confidence
+  const adultQs = quiz.filter(q=>q.isAdult).length;
+  const kidQs = quiz.filter(q=>!q.isAdult).length;
+  const adultConfidence = adultQs ? Math.round((adultCorrect / adultQs)*100) : 0;
+  const kidConfidence = kidQs ? Math.round((kidCorrect / kidQs)*100) : 0;
+
+  // Simple decision: whichever category has higher % correct wins; if very close, "uncertain"
+  let classification = 'Uncertain / Low confidence';
+  let guidance = 'Not enough signal from this short quiz to classify confidently.';
+  if(adultConfidence >= 70 && adultConfidence > kidConfidence) {
+    classification = 'Likely Adult';
+    guidance = 'This user answered a majority of adult-targeted questions correctly.';
+  } else if(kidConfidence >= 70 && kidConfidence > adultConfidence) {
+    classification = 'Likely Child';
+    guidance = 'This user answered a majority of kid-targeted questions correctly.';
+  } else if(adultConfidence > kidConfidence) {
+    classification = 'Possibly Adult';
+    guidance = 'Leans adult, but confidence is moderate.';
+  } else if(kidConfidence > adultConfidence) {
+    classification = 'Possibly Child';
+    guidance = 'Leans child, but confidence is moderate.';
+  } else {
+    classification = 'Ambiguous';
+    guidance = 'Responses suggest mixed signal or guessing.';
+  }
+
+  resultArea.innerHTML = `
+    <h3 style="margin:0 0 6px 0">Result: <span style="color:var(--accent)">${classification}</span></h3>
+    <div class="small" style="margin-bottom:10px">${guidance}</div>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap">
+      <div style="min-width:160px">
+        <strong>Adult-targeted Qs</strong>
+        <div class="small">Correct: ${adultCorrect} / ${adultQs} (${adultConfidence}%)</div>
+      </div>
+      <div style="min-width:160px">
+        <strong>Kid-targeted Qs</strong>
+        <div class="small">Correct: ${kidCorrect} / ${kidQs} (${kidConfidence}%)</div>
+      </div>
+    </div>
+
+    <hr style="margin:12px 0; border:none; height:1px; background:rgba(255,255,255,0.03)" />
+
+    <div style="font-size:14px">
+      <strong>How it works:</strong>
+      <p class="small" style="margin:6px 0">This quiz mixes easier child-focused questions and harder adult-focused questions. It measures which set the user answers correctly more often and reports a rough confidence percentage per set. It's intentionally short to remain usable as a quick gate.</p>
+      <p class="small" style="margin:6px 0"><em>Reminder:</em> This is not a substitute for verified age checks. For regulated content use formal age verification services or consult legal requirements.</p>
+    </div>
+
+    <div style="margin-top:10px">
+      <button id="retry">Try again</button>
+    </div>
+  `;
+
+  document.getElementById('retry').addEventListener('click', ()=> {
+    // reset and rebuild quiz
+    quiz = buildQuiz();
+    curIndex = 0;
+    answers = new Array(quiz.length).fill(null);
+    adultCorrect = 0;
+    kidCorrect = 0;
+    document.getElementById('quiz-area').style.display = '';
+    resultArea.style.display = 'none';
+    totalElem.textContent = quiz.length;
+    renderQuestion(curIndex);
+  });
+}
+
+</script>
+</body>
+</html>
