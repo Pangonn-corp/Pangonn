@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- Place this in the <head> section of every HTML page -->
+<link rel="stylesheet" href="/style.css">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>CAPTCATA</title>
@@ -56,6 +58,8 @@
     <p><strong>Note:</strong> This test is imperfect and is just a starter for the real finished CAPTCATA</p>
   </footer>
 </div>
+<!-- The cursor grid container should also be added in the body if you want the trail on this page -->
+    <div id="cursor-grid-container"></div>
 
 <script>
 const adultPool = [
@@ -369,5 +373,9 @@ function showResult(){
 }
 
 </script>
+  <!-- linking the js file -->
+<!-- Place this just before the closing </body> tag on every HTML page -->
+<script src="/script.js"></script>
 </body>
 </html>
+
