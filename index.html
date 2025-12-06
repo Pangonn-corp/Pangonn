@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+         <title>Pangonn</title>
+        <!-- CSS is now linked externally to style.css -->
+        <link rel="stylesheet" href="/style.css"> 
+           <style>
+      /* Keeping only the necessary body styles that aren't managed by variables */
+      body {
+        background-color: #000000; 
+        color: #ffffff; 
+        font-family: sans-serif; 
+        margin: 0; 
+        padding: 0; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+        min-height: 100vh;
+      }
+      
+      /* === NEW STYLE TO HIDE THE TRAIL TOGGLE BUTTON === */
+      /* This makes the button invisible but still lets the script find it. */
+      #toggle-trail-hidden {
+        display: none !important;
+      }
+    </style>
+    </head>
+   <body>
+    <!-- The grid container is placed right after the body tag -->
+    <div id="cursor-grid-container"></div>
+    
+    <h2 style="text-align: center; font-size: 2em; margin-bottom: 1em; margin-top: 20px;">Welcome to pangonn</h2>
+    
+    <h3>See more tools and stuff</h3>
+    <!-- linking the button to another page on the site -->
+    <a href="/extras.html" class="color-button color-button-primary">Extra stuff</a>
+
+    <h3>Test the CAPTCHA</h3>
+    <!-- linking the button to another page on the site -->
+    <a href="/captcata.html" class="color-button color-button-primary">CAPTCHA</a>
+
+    <h3>Test the blocksi blocksi-screen</h3>
+    <!-- linking the button to another page on the site -->
+    <a href="/blocksi-screen.html" class="color-button color-button-primary">blocksi-screen</a>
+
+    <!-- === HIDDEN ELEMENT ADDED HERE === -->
+    <!-- The script.js looks for this ID to know if it should initialize the trail. -->
+    <!-- We give it a unique ID and then use CSS to hide it completely. -->
+    <button id="toggle-trail-hidden" class="color-button color-button-primary" style="display: none;">Loading...</button>
+
+    <!-- === JAVASCRIPT LINK === -->
+    <script src="/script.js"></script>
+   </body>
+</html>

@@ -120,14 +120,20 @@ const handleMouseMove = (e) => {
 
 // --- Site-Wide Trail Toggle Logic ---
 const updateTrailState = (isEnabled) => {
+    if (!container) return; // Safety check
+    
     if (isEnabled) {
         container.classList.remove('disabled');
-        toggleButton.textContent = 'Turn Trail Off';
+        // Only update button text if the button actually exists
+        if(toggleButton) {
+           toggleButton.textContent = 'Turn Trail Off';
+        }
         localStorage.setItem(TRAIL_STORAGE_KEY, 'true');
-        createGrid();
     } else {
         container.classList.add('disabled');
-        toggleButton.textContent = 'Turn Trail On';
+        if(toggleButton) {
+           toggleButton.textContent = 'Turn Trail On';
+        }
         localStorage.setItem(TRAIL_STORAGE_KEY, 'false');
     }
 };
@@ -185,6 +191,11 @@ const setupCipherTool = () => {
     const outputDiv = document.getElementById('cipher-output');
     const encodeBtn = document.getElementById('encode-btn');
     const decodeBtn = document.getElementById('decode-btn');
+
+    if (!inputArea || !shiftInput || !outputDiv || !encodeBtn || !decodeBtn) {
+        // Exit if elements for cipher tool are not on the page (like index.html)
+        return;
+    }
 
     const handleCipher = (action) => {
         const text = inputArea.value;
@@ -244,13 +255,13 @@ document.addEventListener('DOMContentLoaded', () => {
     colorPicker = document.getElementById('theme-color-picker');
     colorDisplay = document.getElementById('current-color-display');
 
-    // 1. Load Tab Cloaker settings
+    // 1. Load Tab Cloaker settings (Elements only exist on extras.html, but loading is harmless)
     const storedTitle = localStorage.getItem('tabTitle');
     const storedIcon = localStorage.getItem('tabIcon');
     if (storedTitle) document.title = storedTitle;
     if (storedIcon) changeTabIcon(storedIcon);
 
-    // 2. Setup About:Blank Creator Listener
+    // 2. Setup About:Blank Creator Listener (Elements only exist on extras.html)
     const createButton = document.getElementById('create');
     const urlTarget = document.getElementById('url-target');
     if (createButton && urlTarget) {
@@ -269,21 +280,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Load and apply the theme color immediately
     loadThemeColor();
     
-    // 4. Setup Accordion
+    // 4. Setup Accordion (Elements only exist on extras.html)
     setupAccordion();
 
-    // 5. Setup Theme Picker Listener
+    // 5. Setup Theme Picker Listener (Elements only exist on extras.html)
     if (colorPicker) {
         colorPicker.addEventListener('input', (e) => {
             applyThemeColor(e.target.value);
         });
     }
 
-    // 6. Setup Trail Control (only if elements exist)
-    if (container && toggleButton) {
+    // 6. Setup Trail Control (CLEANER FIX)
+    // Check for the container first. This is all that is needed to start the trail.
+    if (container) {
         let isTrailOn;
         const storedState = localStorage.getItem(TRAIL_STORAGE_KEY);
 
+        // Determine initial state
         if (storedState === null) {
             isTrailOn = true;
             localStorage.setItem(TRAIL_STORAGE_KEY, 'true');
@@ -291,16 +304,23 @@ document.addEventListener('DOMContentLoaded', () => {
             isTrailOn = storedState === 'true';
         }
 
+        // Apply state and create grid if trail is enabled
         updateTrailState(isTrailOn);
         createGrid(); 
         
+        // Setup event listeners for mouse and resize
         window.addEventListener('resize', createGrid);
         document.addEventListener('mousemove', handleMouseMove);
         
-        toggleButton.addEventListener('click', toggleTrail);
+        // ONLY setup the toggle button listener if the button exists on the page (extras.html)
+        if (toggleButton) {
+             toggleButton.addEventListener('click', toggleTrail);
+             // Ensure initial button text is correct
+             updateTrailState(isTrailOn);
+        }
     }
 
-    // 7. Setup Cipher Tool
+    // 7. Setup Cipher Tool (Now checks if elements exist inside the function)
     setupCipherTool();
 });
 
