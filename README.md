@@ -42,12 +42,14 @@ This project is all about creating a **game-packed website** where you can play 
 **(still in progress)
 
 Or run locally:
+(must have git installed, if not manualy download the project)
 
 ```bash
 git clone https://github.com/Mewinator/Pangonn/
 ```
 
 then start a python server with:
+(must have python 3 and up installed to run on local python server
 
 ```
 python -m http.server 8000
