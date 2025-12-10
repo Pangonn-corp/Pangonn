@@ -86,5 +86,5 @@ This project is licensed under the **Apache License 2.0** 📄
 
 ### 💡 Stay tuned — big things coming soon!
 
-Play hard, have fun and Rebell against the all seeing daemen blocks🎮🔥
+Play hard, have fun and Rebell against the all seeing daemen blocksi🎮🔥
 - sincerly, palmtree890 (aka kaleb/K4L3B) & Mewinator
