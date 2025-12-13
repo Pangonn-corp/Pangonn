@@ -6,7 +6,7 @@ Welcome to **Pangonn** — your all-in-one online arcade! 🕹️✨
 This project is all about creating a **game-packed website** where you can play a ton of different games — right from your browser. 🚀
 
 [![Alt text](./images/banner.png)](https://discord.gg/AbcWaudurD)
-
+[Click me to join discord server](https://discord.gg/AbcWaudurD)
 ---
 
 ## 🚧 Project Status
